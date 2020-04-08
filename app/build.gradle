@@ -195,3 +195,75 @@ task outerInfo{
 //执行gradlew -q outerInfo
 //执行结果
 //OuterExt{outerName='outer', msg='this is out msg', innerExt=InnerExt{innerName='inner', msg='this is inner msg'}}
+
+class DomainObj{
+    String name
+    String msg
+
+    DomainObj(String name) {
+        this.name = name
+    }
+
+    void msg(String msg){
+        this.msg = msg
+    }
+
+
+    @Override
+    public String toString() {
+        return "DomainObj{" +
+                "name='" + name + '\'' +
+                ", msg='" + msg + '\'' +
+                '}'
+    }
+}
+
+class ExtensionObj{
+    //定义一个 NamedDomainObjectContainer 属性
+    NamedDomainObjectCollection<DomainObj> domains
+
+    ExtensionObj(Project project) {
+        //通过 project.container(...) 方法创建 NamedDomainObjectContainer
+        NamedDomainObjectCollection<DomainObj> domainObjs = project.container(DomainObj)
+        this.domains = domainObjs
+    }
+
+    //让其支持 Gradle DSL 语法
+    void domain(Action<NamedDomainObjectCollection<DomainObj>> action){
+        action.execute(domains)
+    }
+
+    void iterate(){
+        domains.all {data -> println data}
+    }
+}
+
+def iterator = getExtensions().create("extensionObj",ExtensionObj,project)
+
+extensionObj{
+    domain{
+        domains1{
+            msg "this is domain1"
+        }
+        domains2{
+            msg "this is domain2"
+        }
+        domains3{
+            msg "this is domain3"
+        }
+    }
+}
+
+task iterateTask{
+    doLast{
+        iterator.iterate()
+    }
+}
+
+//执行gradlew -q iterateTask
+//执行结果
+//DomainObj{name='domains1', msg='this is domain1'}
+//DomainObj{name='domains2', msg='this is domain2'}
+//DomainObj{name='domains3', msg='this is domain3'}
+
+

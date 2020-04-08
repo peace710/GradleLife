@@ -53,3 +53,17 @@ Object findByName(String name)
 Object getByName(String name)       //找不到会抛异常
 <T> T getByType(Class<T> type)  //找不到会抛异常
 
+创建NamedDomainObjectContainer
+<T> NamedDomainObjectContainer<T> container​(Class<T> type)
+<T> NamedDomainObjectContainer<T> container​(Class<T> type, NamedDomainObjectFactory<T> factory)
+<T> NamedDomainObjectContainer<T> container​(java.lang.Class<T> type, Closure factoryClosure)
+
+查找和遍历
+//遍历
+void all(Closure action)
+//查找
+<T> T getByName(String name)
+//查找
+<T> T findByName(String name)
+
+
