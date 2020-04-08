@@ -31,6 +31,25 @@ apply plugin: MyPluginImpl
 //引用其他gradle脚本，push.gradle就是另外一个gradle脚本文件
 apply from: './push.gradle'
 
-在与 build.gradle 文件同级目录下，
-定义一个名为 gradle.properties 文件，
-里面定义的键值对，可以在 Project 中直接访问
+在与 build.gradle 文件同级目录下，定义一个名为 gradle.properties 文件，里面定义的键值对，可以在 Project 中直接访问
+
+
+ExtensionContainer
+一般我们通过 ExtensionContainer 来创建 Extension，这个类与 TaskContainer 命名有点类似，
+TaskContainer 是用来创建并管理 Task 的,而 ExtensionContainer 则是用来创建并管理 Extension 的
+
+
+创建Extension
+<T> T create​(String name, Class<T> type, Object... constructionArguments)
+<T> T create​(Class<T> publicType, String name, Class<? extends T> instanceType, Object... constructionArguments)
+
+增加Extension
+void add​(Class<T> publicType, String name, T extension)
+void add​(String name, T extension)
+
+查找Extension
+Object findByName(String name)
+<T> T findByType(Class<T> type)
+Object getByName(String name)       //找不到会抛异常
+<T> T getByType(Class<T> type)  //找不到会抛异常
+

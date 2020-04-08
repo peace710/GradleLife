@@ -7,3 +7,191 @@ println "${username}'s age is ${age}"
 println "${ext.username}'s age is ${age}"
 println "${project.username}'s age is ${age}"
 println "${project.ext.username}'s age is ${age}"
+
+class Person{
+    int age
+    String userName
+
+    String toString(){
+        return "name = ${userName},age = ${age}"
+    }
+}
+
+//创建名为person的Extension
+getExtensions().create("person",Person)
+
+//配置Extension
+person{
+    age = 20
+    userName = "peace910710"
+}
+
+task personInfo{
+    doLast{
+        println project.person
+    }
+}
+
+class Animal{
+    String animal
+    int legs
+
+    Animal(String animal) {
+        this.animal = animal
+    }
+
+    void setLegs(int legs) {
+        this.legs = legs
+    }
+
+
+    @Override
+    public String toString() {
+        return "Animal{" +
+                "animal='" + animal + '\'' +
+                ", legs=" + legs +
+                '}'
+    }
+}
+
+class Pig extends Animal{
+    int age
+    String owner
+
+    Pig(int age, String owner) {
+        super("Pig")
+        this.age = age
+        this.owner = owner
+    }
+
+
+    @Override
+    public String toString() {
+        return  super.toString() + " " +
+                "Pig{" +
+                "age=" + age +
+                ", owner='" + owner + '\'' +
+                '}'
+    }
+}
+//创建的Extension是 Animal 类型
+Animal animalObj = getExtensions().create(Animal,"animal",Pig ,6 ,"hulk")
+//创建的Extension是 Pig 类型
+Pig pigObj = getExtensions().create("pig",Pig , 8 ,"kobe")
+
+animal{
+    legs = 4
+}
+
+pig{
+    setLegs(2)
+}
+
+task animalInfo{
+    doLast{
+        println animalObj
+        println pigObj
+        //验证 pig 对象是 ExtensionAware 类型的
+        println "pig is a instance of ExtensionAware : ${pigObj instanceof ExtensionAware}"
+    }
+}
+//执行gradlew -q animalInfo
+//执行结果
+//Animal{animal='Pig', legs=4} Pig{age=6, owner='hulk'}
+//Animal{animal='Pig', legs=2} Pig{age=8, owner='kobe'}
+//pig is a instance of ExtensionAware : true
+
+getExtensions().add(Pig,"pig24",new Pig(24,"kobe"))
+pig24{
+    animal = "pig23"
+    age = 23
+    owner = "Jordan"
+    legs = 4
+}
+
+task findPig{
+    doLast{
+        def pig = project.getExtensions().findByName("pig24")
+        println pig
+    }
+}
+//执行gradlew -q findPig
+//执行结果
+//Animal{animal='pig23', legs=4} Pig{age=23, owner='Jordan'}
+
+class InnerExt{
+    String innerName
+    String msg
+
+    void innerName(String innerName) {
+        this.innerName = innerName
+    }
+
+    void msg(String msg) {
+        this.msg = msg
+    }
+
+
+    @Override
+    public String toString() {
+        return "InnerExt{" +
+                "innerName='" + innerName + '\'' +
+                ", msg='" + msg + '\'' +
+                '}'
+    }
+}
+
+class OuterExt{
+    String outerName
+    String msg
+    InnerExt innerExt = new InnerExt()
+
+    void outerName(String outerName) {
+        this.outerName = outerName
+    }
+
+    void msg(String msg) {
+        this.msg = msg
+    }
+
+    //创建内部Extension，名称为方法名 inner
+    void inner(Action<InnerExt> action){
+        action.execute(inner)
+    }
+
+    //创建内部Extension，名称为方法名 inner
+    void inner(Closure c) {
+        org.gradle.util.ConfigureUtil.configure(c, innerExt)
+    }
+
+
+    @Override
+    public String toString() {
+        return "OuterExt{" +
+                "outerName='" + outerName + '\'' +
+                ", msg='" + msg + '\'' +
+                ", innerExt=" + innerExt +
+                '}'
+    }
+}
+
+def outExt = getExtensions().create("outer",OuterExt)
+outer{
+    outerName "outer"
+    msg "this is out msg"
+
+    inner{
+        innerName "inner"
+        msg "this is inner msg"
+    }
+}
+
+task outerInfo{
+    doLast{
+        println outer
+    }
+}
+
+//执行gradlew -q outerInfo
+//执行结果
+//OuterExt{outerName='outer', msg='this is out msg', innerExt=InnerExt{innerName='inner', msg='this is inner msg'}}
