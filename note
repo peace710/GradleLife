@@ -1,0 +1,10 @@
+在app、librarys和根目录的build.gradle文件分别加入
+println "build.gradle in root"
+println "build.gradle in app"
+println "build.gradle in librarys"
+
+
+执行结果如下
+build.gradle in root
+build.gradle in app
+build.gradle in librarys
