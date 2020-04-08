@@ -3,8 +3,34 @@ println "build.gradle in root"
 println "build.gradle in app"
 println "build.gradle in librarys"
 
-
-执行结果如下
+执行gradlew -q task
+结果如下
 build.gradle in root
 build.gradle in app
 build.gradle in librarys
+
+在根目录里的settings.gradle
+通过include方法引入需要构建的子项目
+
+项目配置
+//通过path定位并获取该 Project 对象
+project(path: String): Project
+//通过path定位一个Project，并进行配置
+project(path: String, config: Closure): Project
+
+//针对所有项目进行配置
+allprojects(config: Closure)
+//针对所有子项目进行配置
+subprojects(config: Closure)
+
+apply
+//使用插件，com.android.application 就是插件id
+apply plugin: 'com.android.application'
+//使用插件，MyPluginImpl 就是一个Plugin接口的实现类
+apply plugin: MyPluginImpl
+//引用其他gradle脚本，push.gradle就是另外一个gradle脚本文件
+apply from: './push.gradle'
+
+在与 build.gradle 文件同级目录下，
+定义一个名为 gradle.properties 文件，
+里面定义的键值对，可以在 Project 中直接访问

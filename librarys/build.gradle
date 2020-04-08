@@ -1,1 +1,8 @@
 println "build.gradle in librarys"
+println "allParam = ${allParam}"
+println "subParam = ${subParam}"
+println "${username} work ${company} in librarys"
+println "${username}'s age is ${age}"
+println "${ext.username}'s age is ${age}"
+println "${project.username}'s age is ${age}"
+println "${project.ext.username}'s age is ${age}"

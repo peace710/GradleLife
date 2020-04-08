@@ -1,1 +1,33 @@
 println "build.gradle in root"
+
+project(":app"){
+    ext{
+        appParam = "app project"
+    }
+}
+
+allprojects{
+    ext{
+        allParam = "all projects"
+    }
+}
+
+subprojects {
+    ext{
+        subParam = "sub project"
+    }
+}
+
+println "allParam = ${allParam}"
+println "${username} work ${company} in root"
+
+//作用域只限当前gradle,其他地方使用会被gradle.properties定义所覆盖
+ext{
+    username = "peace710"
+    age = 18
+}
+
+println "${username}'s age is ${age}"
+println "${ext.username}'s age is ${age}"
+println "${project.username}'s age is ${age}"
+println "${project.ext.username}'s age is ${age}"
