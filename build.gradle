@@ -13,6 +13,10 @@ allprojects{
 }
 
 subprojects {
+    sub -> sub.beforeEvaluate{
+        pro -> println "sub project before evaluate"
+    }
+
     ext{
         subParam = "sub project"
     }
@@ -31,3 +35,10 @@ println "${username}'s age is ${age}"
 println "${ext.username}'s age is ${age}"
 println "${project.username}'s age is ${age}"
 println "${project.ext.username}'s age is ${age}"
+
+task rooTest{
+    println "root"
+    doLast{
+        println "execute root"
+    }
+}

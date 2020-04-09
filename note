@@ -67,3 +67,49 @@ void all(Closure action)
 <T> T findByName(String name)
 
 
+Project
+Project 提供的生命周期回调方法有：
+//在 Project 进行配置前调用
+void beforeEvaluate(Closure closure)
+//在 Project 配置结束后调用
+void afterEvaluate(Closure closure)
+beforeEvaluate 必须在父模块的 build.gradle 对子模块进行配置才能生效，
+因为在当前模块的 build.gradle 中配置，它自己本身都没配置好，所以不会监听到
+
+Gradle
+Gradle 提供的生命周期回调方法很多
+//在project进行配置前调用，child project必须在root project中设置才会生效，root project必须在settings.gradle中设置才会生效
+void beforeProject(Closure closure)
+//在project配置后调用
+afterProject(Closure closure)
+//构建开始前调用
+void buildStarted(Closure closure)
+//构建结束后调用
+void buildFinished(Closure closure)
+//所有project配置完成后调用
+void projectsEvaluated(Closure closure)
+//当settings.gradle中引入的所有project都被创建好后调用，只在该文件设置才会生效
+void projectsLoaded(Closure closure)
+//settings.gradle配置完后调用，只对settings.gradle设置生效
+void settingsEvaluated(Closure closure)
+
+TaskExecutionGraph（Task执行图）
+//任务执行前掉用
+void afterTask​(Closure closure)
+//任务执行后调用
+void beforeTask(Closure closure)
+//任务准备好后调用
+void whenReady(Closure closure)
+
+
+生命周期回调
+gradle.settingsEvaluated->
+gradle.projectsLoaded->
+gradle.beforeProject->
+project.beforeEvaluate->
+gradle.afterProject->
+project.afterEvaluate->
+gradle.projectsEvaluated->
+gradle.taskGraph.graphPopulated->
+gradle.taskGraph.whenReady->
+gradle.buildFinished->
